@@ -3,6 +3,7 @@ import Spaceship from "../Spaceship/Spaceship";
 
 class SpaceshipList extends Component {
     state = {
+        showheader: false,
         anotherheader: 'Some value',
         spaceships: [
             {id: 0, name: 'Spaceship1', crew: 150},
@@ -25,7 +26,18 @@ class SpaceshipList extends Component {
         spaceships: [...copyofships]});
     }
 
+    headerswitch = () => {
+        this.setState({showheader: !this.state.showheader})
+    }
+
     render() {
+        const header = this.state.showheader ? (
+            <div>
+            <h1>{this.props.myheader}</h1>
+            <h2>{this.state.anotherheader}</h2>
+            </div>
+        ) : (<div>Header is now hidden!!!</div>)
+
         const ships = this.state.spaceships.map(spaceship => (
             <Spaceship name={spaceship.name}
                        myclickhandler={this.deleteAShip.bind(this, spaceship.id)}
@@ -35,8 +47,8 @@ class SpaceshipList extends Component {
 
         return (
             <div>
-                <h1>{this.props.myheader}</h1>
-                <h2>{this.state.anotherheader}</h2>
+                <div onClick={this.headerswitch}>Button div</div>
+                { header }
                 {ships}
             </div>
         )
