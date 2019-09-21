@@ -1,9 +1,26 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 const planetList = React.memo( (props) => {
-    let mymodel;
-    let mymodelupdate;
-    [mymodel, mymodelupdate] = useState({planets: [
+
+
+    useEffect(() => {
+        console.log('Component was mounted!!!')
+    }, [])
+
+    useEffect(() => {
+        console.log('Component was mounted or UPDATED!!!')
+    })
+
+    useEffect(() => {
+        return () => {
+            console.log('Component was UNMOUNTED!!!')
+        }
+    }, [])
+
+
+
+
+    const [mymodel, mymodelupdate] = useState({planets: [
             {id: 0, name: 'Jupiter'},
             {id: 1, name: 'Mars'},
             {id: 2, name: 'Pluto'},
@@ -12,12 +29,22 @@ const planetList = React.memo( (props) => {
             {id: 5, name: 'Venus'},
             {id: 6, name: 'Mecury'},
         ]})
+    const [headerState, updateHeaderstate] = useState('Planets to go to')
+    const textfieldchanged = (myevent) => {
+        const inputvalue = myevent.target.value
+        console.log("textfield changed: " + inputvalue)
+        updateHeaderstate((prevheaderstate) =>{
+            return inputvalue;
+        })
+    }
 
     const clickhandlerPlanet = (id) => {
-        const myplanets = [...mymodel.planets]
-        const planetindex = myplanets.findIndex(planet => planet.id === id)
-        myplanets.splice(planetindex, 1)
-        mymodelupdate({planets: myplanets})
+        mymodelupdate((prevstate) => {
+            const myplanets = [...prevstate.planets]
+            const planetindex = myplanets.findIndex(planet => planet.id === id)
+            myplanets.splice(planetindex, 1)
+            return {planets: myplanets}
+        })
     }
 
     const myplanets = mymodel.planets.map(planet => (<div key={planet.id}
@@ -26,7 +53,8 @@ const planetList = React.memo( (props) => {
 
     return (
         <div>
-            Here comes our list of planets!
+            <input type="text" onChange={textfieldchanged} id="headerinputfield1"/>
+            {headerState}
             { myplanets }
         </div>
     )
