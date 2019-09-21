@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 
 const planetList = React.memo( (props) => {
-
+    const axios = require('axios').default;
 
     useEffect(() => {
         console.log('Component was mounted!!!')
@@ -21,14 +21,60 @@ const planetList = React.memo( (props) => {
 
 
     const [mymodel, mymodelupdate] = useState({planets: [
-            {id: 0, name: 'Jupiter'},
-            {id: 1, name: 'Mars'},
-            {id: 2, name: 'Pluto'},
-            {id: 3, name: 'Saturn'},
-            {id: 4, name: 'Earth'},
-            {id: 5, name: 'Venus'},
-            {id: 6, name: 'Mecury'},
+            {id: -1, name: 'Dummy  planet'}
         ]})
+     const getmydataaxios = () => {
+        axios.get('/api/planet')
+              .then((bodydata) => {
+                  console.log("Axios data: " + JSON.stringify(bodydata))
+                mymodelupdate((prevstate) => {
+                    return {planets: [...bodydata.data]}
+                });
+            })
+    }
+
+    const getmydata = () => {
+        fetch('/api/planet', {
+            method: 'GET',
+            header: {
+                'Accepts': 'application/json'
+            }
+        }).then((response) => response.json())
+            .then((bodydata) => {
+                mymodelupdate((prevstate) => {
+                    return {planets: [...bodydata]}
+            });
+    })
+    }
+
+    const updatemyplanetsAxios= (newplanets) => {
+        console.log("planets: " + JSON.stringify(newplanets))
+        axios.post('/api/planet',
+            newplanets
+        ).then((bodydata) => {
+            mymodelupdate((prevstate) => {
+                return {planets: [...bodydata.data]}
+            });
+        })
+    }
+
+    const updatemyplanets= (newplanets) => {
+        console.log("planets: " + JSON.stringify(newplanets))
+        fetch('/api/planet', {
+            method: 'POST',
+                headers: {
+                    'Accepts': 'application/json',
+                    'content-type': 'application/json'
+            },
+            body: JSON.stringify(newplanets)
+        }).then((response) => response.json())
+    .then((bodydata) => {
+        mymodelupdate((prevstate) => {
+            return {planets: [...bodydata]}
+        });
+    })
+    }
+
     const [headerState, updateHeaderstate] = useState('Planets to go to')
     const textfieldchanged = (myevent) => {
         const inputvalue = myevent.target.value
@@ -38,13 +84,12 @@ const planetList = React.memo( (props) => {
         })
     }
 
+
     const clickhandlerPlanet = (id) => {
-        mymodelupdate((prevstate) => {
-            const myplanets = [...prevstate.planets]
+            const myplanets = [...mymodel.planets]
             const planetindex = myplanets.findIndex(planet => planet.id === id)
             myplanets.splice(planetindex, 1)
-            return {planets: myplanets}
-        })
+            updatemyplanetsAxios(myplanets)
     }
 
     const myplanets = mymodel.planets.map(planet => (<div key={planet.id}
@@ -53,7 +98,14 @@ const planetList = React.memo( (props) => {
 
     return (
         <div>
+            <div>
+                <button onClick={getmydataaxios} id="button1">
+                    Get My data
+                </button>
+            </div>
+        <div>
             <input type="text" onChange={textfieldchanged} id="headerinputfield1"/>
+        </div>
             {headerState}
             { myplanets }
         </div>
