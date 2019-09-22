@@ -1,0 +1,10 @@
+.planet{
+    margin: 4px;
+    padding: 4px;
+}
+.planetlocal{
+    border: 4px solid green;
+}
+.planethabitable{
+    box-shadow: 4px 0px 0px 4px blueviolet;
+}

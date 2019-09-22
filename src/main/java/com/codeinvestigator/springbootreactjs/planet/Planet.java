@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class Planet {
     private Integer id;
     private String name;
+    private boolean localSolarSystem;
+    private boolean habitable;
 }
