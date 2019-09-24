@@ -5,10 +5,21 @@ import {BrowserRouter, Route, Redirect, Switch, Link, NavLink} from 'react-route
 import PlanetList from './PlanetList/PlanetList'
 import PlanetDetails from './PlanetDetails/PlanetDetails'
 
+import { createStore } from "redux";
+import { Provider } from 'react-redux'
+import AllReducers from './reducer/AllReducers'
+import FuelPrice from './FuelPrice/FuelPrice'
+import Login from './Login/Login'
+
 function App() {
     const [shouldshowState, updateShouldShowState] = useState(true)
+    const mystore = createStore(AllReducers,
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+
+
 
     return (
+        <Provider store={mystore}>
         <BrowserRouter>
             <StyleRoot>
                 <div className="App">
@@ -18,10 +29,10 @@ function App() {
                         </div>
                         <div className='navItem'>
                             <NavLink activeClassName='mycustomactive'
-                                     to='/quotes'>Quotes</NavLink>
+                                     to='/login'>Login screen</NavLink>
                         </div>
                         <div className='navItem'>
-                            <NavLink to='/asteroids'>Asteroids</NavLink>
+                            <NavLink to='/fuelprice'>Fuel Price</NavLink>
                         </div>
                         <div className='navItem'>
                             <NavLink to='/planetdetails'>PlanetDetails</NavLink>
@@ -31,8 +42,8 @@ function App() {
                         <Switch>
                             <Route path='/planets' exact component={PlanetList}/>
                             <Route path='/planetdetails/:planetid' exact component={PlanetDetails}/>
-                            <Route path='/quotes' exact render={() => <h1>Quotes</h1>}/>
-                            <Route path='/asteroids' exact render={() => <h1>Asteroids!!!</h1>}/>
+                            <Route path='/login' exact component={Login}/>
+                            <Route path='/fuelprice' exact component={FuelPrice}/>
                             <Redirect from='/' to='/quotes'/>
                             {/*<Route path='/' render={() => <h1>UNKNOWN PATH!!!! Not found try again</h1>}/>*/}
                         </Switch>
@@ -42,6 +53,7 @@ function App() {
             </StyleRoot>
 
         </BrowserRouter>
+        </Provider>
     );
 }
 

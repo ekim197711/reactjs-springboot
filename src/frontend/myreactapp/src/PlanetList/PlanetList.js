@@ -2,10 +2,10 @@ import React, {useState, useEffect} from 'react'
 import './PlanetList.css'
 import Radium from 'radium'
 import {NavLink, withRouter} from 'react-router-dom'
-
+import {useSelector} from "react-redux";
 const planetList = React.memo(Radium((props) => {
     console.log(props)
-
+    const loginstate = useSelector(state => {return state.login})
     const axios = require('axios').default;
 
     const [mymodel, mymodelupdate] = useState({
@@ -71,9 +71,7 @@ const planetList = React.memo(Radium((props) => {
 
     })
 
-
-    return (
-        <div>
+    const planetcontent = loginstate === true ?(<div>WE ARE LOGGED IN
             <div>
                 <button onClick={getmydataaxios} id="button1">
                     Get My data
@@ -83,7 +81,14 @@ const planetList = React.memo(Radium((props) => {
             <div className='planets'>
                 {myplanets}
             </div>
-        </div>
-    )
+    </div>)
+        : (<div>WE ARE NOT LOGGED IN</div>)
+    //          : (<div> SORRY LOGIN BEFORE WATCHING THE PLANET INFO</div>)
+
+
+    return (<div>
+        {planetcontent}
+
+    </div>)
 }))
 export default withRouter(planetList);
